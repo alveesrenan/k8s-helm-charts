@@ -1,0 +1,38 @@
+cloudProvider: aws
+
+autoDiscovery:
+  ## EKS cluster name.
+  clusterName: eks-cluster
+
+## You must use the same image tag version as your EKS version.
+## e.g: Kubernetes Version: 1.15, docker image tag: v.1.15.X (where X can be wherever valid image tag)
+image:
+  repository: k8s.gcr.io/cluster-autoscaler
+  tag: v1.15.5
+  pullPolicy: IfNotPresent
+
+extraArgs:
+  v: 4
+  stderrthreshold: info
+  logtostderr: true
+  skip-nodes-with-local-storage: false
+  expander: least-waste
+  balance-similar-node-groups: true
+  skip-nodes-with-system-pods: false
+
+rbac:
+  create: true
+
+## Should only be used if you're using prometheus-operator.
+serviceMonitor:
+  enabled: true
+  interval: "10s"
+  ## Namespace Prometheus is installed in
+  namespace: monitoring
+  ## Defaults to whats used if you follow CoreOS [Prometheus Install Instructions](https://github.com/helm/charts/tree/master/stable/prometheus-operator#tldr)
+  ## [Prometheus Selector Label](https://github.com/helm/charts/tree/master/stable/prometheus-operator#prometheus-operator-1)
+  ## [Kube Prometheus Selector Label](https://github.com/helm/charts/tree/master/stable/prometheus-operator#exporters)
+  selector:
+    release: prometheus-operator
+  ## The metrics path to scrape - autoscaler exposes /metrics (standard)
+  path: /metrics
