@@ -75,3 +75,7 @@ It's composed by:
 - **[aws-csi-efs-driver](https://docs.aws.amazon.com/eks/latest/userguide/efs-csi.html)** 
 
     The Amazon EFS Container Storage Interface (CSI) driver provides a CSI interface that allows Amazon EKS clusters to manage the lifecycle of Amazon EFS file systems. The directory contains a deploy.sh file responsible to install the csi-efs-driver through helm.
+
+- **[metrics-server](https://github.com/helm/charts/tree/master/stable/metrics-server)** 
+
+    [Metrics Server](https://github.com/kubernetes-incubator/metrics-server) is a cluster-wide aggregator of resource usage data. Resource metrics are used by components like `kubectl top` and the [Horizontal Pod Autoscaler](https://kubernetes.io/docs/tasks/run-application/horizontal-pod-autoscale) to scale workloads. To autoscale based upon a custom metric, see the [Prometheus Adapter chart](https://github.com/helm/charts/blob/master/stable/prometheus-adapter).
