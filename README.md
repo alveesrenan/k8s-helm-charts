@@ -71,3 +71,7 @@ It's composed by:
 - **[aws-csi-ebs-driver](https://docs.aws.amazon.com/eks/latest/userguide/ebs-csi.html)** 
 
     The Amazon EBS Container Storage Interface (CSI) driver provides a CSI interface that allows Amazon EKS clusters to manage the lifecycle of Amazon EBS volumes for persistent volumes. The directory contains a deploy.sh file responsible to install the csi-ebs-driver through helm.
+
+- **[aws-csi-efs-driver](https://docs.aws.amazon.com/eks/latest/userguide/efs-csi.html)** 
+
+    The Amazon EFS Container Storage Interface (CSI) driver provides a CSI interface that allows Amazon EKS clusters to manage the lifecycle of Amazon EFS file systems. The directory contains a deploy.sh file responsible to install the csi-efs-driver through helm.
