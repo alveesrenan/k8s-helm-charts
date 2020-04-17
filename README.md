@@ -62,3 +62,8 @@ It's composed by:
 - **prometheus-service-monitors** 
 
     Helm chart containing prometheus service monitor used in conjunction to prometheus operator to scrape metrics from external components, e.g: microservices, dynamically.
+
+- **[cluster-autoscaler](https://github.com/helm/charts/tree/master/stable/cluster-autoscaler)** 
+
+    The cluster autoscaler scales worker nodes within an AWS autoscaling group (ASG) or Spotinst Elastigroup. In this case,
+    contains a deploy.sh file responsible for deploying the cluster-autoscaler artifacts using aws as the cloud provider.
