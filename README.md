@@ -39,3 +39,15 @@ It's composed by:
     helm upgrade --install ${CHART_NAME} ${CHART_REPOSITORY}/${CHART_NAME} --version=${CHART_VERSION} \
     --namespace ${CHART_NAMESPACE} $EXTRA_CMD
     check_status $? 'Error when installing helm chart.'
+
+- **[nfs-client-provisioner](https://github.com/helm/charts/tree/master/stable/nfs-client-provisioner)** 
+
+    The NFS client provisioner is an automatic provisioner for Kubernetes that uses your already configured NFS server, automatically creating Persistent Volumes.
+
+    Contains a deploy.sh file responsible for installing nfs-client-provisioner helm release on top of k8s cluster.
+
+    Can be deployed by running the following command:
+    ```
+    #!/bin/bash
+    ./deploy.sh storage-class-name foo.bar /volume/foo
+    ```
