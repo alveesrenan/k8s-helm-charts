@@ -39,6 +39,7 @@ It's composed by:
     helm upgrade --install ${CHART_NAME} ${CHART_REPOSITORY}/${CHART_NAME} --version=${CHART_VERSION} \
     --namespace ${CHART_NAMESPACE} $EXTRA_CMD
     check_status $? 'Error when installing helm chart.'
+    ```
 
 - **[nfs-client-provisioner](https://github.com/helm/charts/tree/master/stable/nfs-client-provisioner)** 
 
@@ -51,3 +52,13 @@ It's composed by:
     #!/bin/bash
     ./deploy.sh storage-class-name foo.bar /volume/foo
     ```
+
+- **[prometheus-operator](https://github.com/helm/charts/tree/master/stable/prometheus-operator)** 
+
+    Installs prometheus-operator to create/configure/manage Prometheus clusters atop Kubernetes. This chart includes multiple components and is suitable for a variety of use-cases.
+
+    Contains a deploy.sh file responsible for installing prometheus-operator helm release on top of k8s cluster.
+
+- **prometheus-service-monitors** 
+
+    Helm chart containing prometheus service monitor used in conjunction to prometheus operator to scrape metrics from external components, e.g: microservices, dynamically.
