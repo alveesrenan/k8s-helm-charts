@@ -1,0 +1,18 @@
+{{- if .Values.persistence.enabled -}}
+{{- if not .Values.persistence.existingClaim -}}
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: {{ printf "%s-%s" (include "standard-application.fullname" .) "pvc" }}
+  namespace: {{ include "standard-application.namespace" . }}
+  labels:
+    {{ include "standard-application.labels" . | nindent 4 }}
+spec:
+  storageClassName: {{ .Values.persistence.storageClass | quote }}
+  accessModes:
+    - ReadWriteMany
+  resources:
+    requests:
+      storage: 10Gi
+{{- end -}}
+{{- end -}}
