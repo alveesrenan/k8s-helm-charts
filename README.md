@@ -67,3 +67,7 @@ It's composed by:
 
     The cluster autoscaler scales worker nodes within an AWS autoscaling group (ASG) or Spotinst Elastigroup. In this case,
     contains a deploy.sh file responsible for deploying the cluster-autoscaler artifacts using aws as the cloud provider.
+
+- **[aws-csi-ebs-driver](https://docs.aws.amazon.com/eks/latest/userguide/ebs-csi.html)** 
+
+    The Amazon EBS Container Storage Interface (CSI) driver provides a CSI interface that allows Amazon EKS clusters to manage the lifecycle of Amazon EBS volumes for persistent volumes. The directory contains a deploy.sh file responsible to install the csi-ebs-driver through helm.
