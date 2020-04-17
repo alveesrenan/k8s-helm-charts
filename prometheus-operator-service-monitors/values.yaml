@@ -1,0 +1,28 @@
+
+## Chart representing monitors for prometheus-operator providing an easy monitoring definitions for 
+## Kubernetes services and deployment and management of Prometheus instances.
+## Ref: https://github.com/coreos/prometheus-operator
+## Ref Helm: https://github.com/helm/charts/tree/master/stable/prometheus-operator
+##
+fullnameOverride: prometheus-operator-monitors
+
+labels:
+  release: prometheus-operator
+
+## ServiceMonitor defines monitoring for a set of services.
+## Ref: https://github.com/coreos/prometheus-operator/blob/master/Documentation/api.md#servicemonitor
+##
+serviceMonitors:
+  enabled: true
+  monitors:
+    - name: standard-application
+      matchLabels: 
+        app.kubernetes.io/name: standard-application
+
+## PodMonitor defines monitoring for a set of pods.
+## Ref: https://github.com/coreos/prometheus-operator/blob/master/Documentation/api.md#podmonitor
+## NOTE: If enabled, use the same structure of service monitor.
+##
+podMonitors:
+  enabled: false
+  monitors: []

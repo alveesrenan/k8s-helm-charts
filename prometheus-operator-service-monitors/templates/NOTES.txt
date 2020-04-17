@@ -1,0 +1,17 @@
+{{- $root := . -}}
+
+{{- if .Values.serviceMonitors.enabled -}}
+1. Get the service monitors objects by running `kubectl get servicemonitor --namespace {{ .Release.Namespace }}` command. Available service monitors are:
+{{ print "" }}
+{{- range $serviceMonitor := .Values.serviceMonitors.monitors -}}
+{{ printf "\n- %s-%s-%s" $root.Values.fullnameOverride "service" $serviceMonitor.name }}
+{{- end -}}
+{{- else if .Values.podMonitors.enabled -}}
+1. Get the pod monitors objects by running `kubectl get podmonitor --namespace {{ .Release.Namespace }}` command. Available service monitors are:
+{{ print "" }}
+{{- range $podMonitor := .Values.podMonitors.monitors -}}
+{{ printf "\n- %s-%s-%s" $root.Values.fullnameOverride "pod" $podMonitor.name }}
+{{- end -}}
+{{- end -}}
+{{ print "\n" }}
+Chart was successfuly deployed!

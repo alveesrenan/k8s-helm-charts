@@ -1,0 +1,25 @@
+{{- if .Values.podMonitors.enabled }}
+{{- $root := . -}}
+
+{{- range $podMonitor := .Values.podMonitors.monitors }}
+---
+apiVersion: monitoring.coreos.com/v1
+kind: PodMonitor
+metadata:
+  name: {{ printf "%s-%s-%s" $root.Values.fullnameOverride "pod" $podMonitor.name }}
+  labels:
+    {{ toYaml $root.Values.labels | nindent 4 }}
+spec:
+  namespaceSelector:
+    any: true
+  podMetricsEndpoints:
+  - port: service
+    path: /actuator/prometheus
+    interval: 1s
+  selector:
+    matchLabels:
+    {{- range $label_key, $label_value := $podMonitor.matchLabels }}
+      {{ $label_key }}: {{ $label_value }}
+    {{ end -}}
+{{ end -}}
+{{ end -}}

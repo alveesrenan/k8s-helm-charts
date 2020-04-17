@@ -1,0 +1,11 @@
+apiVersion: v1
+name: prometheus-operator-service-monitors
+version: 1.0.0
+appVersion: 1.0.0
+description: Standard helm chart for using service monitors on top of prometheus operator helm chart aiming to be auto discovered.
+sources:
+  - https://github.com/alveesrenan/k8s-helm-charts/prometheus-operator-service-monitors
+maintainers:
+  - name: Renan Alves
+    email: alvees.renan@gmail.com
+engine: java|kotlin|nodejs|...

@@ -1,0 +1,25 @@
+{{- if .Values.serviceMonitors.enabled }}
+{{- $root := . -}}
+
+{{- range $serviceMonitor := .Values.serviceMonitors.monitors }}
+---
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: {{ printf "%s-%s-%s" $root.Values.fullnameOverride "service" $serviceMonitor.name }}
+  labels:
+    {{ toYaml $root.Values.labels | nindent 4 }}
+spec:
+  namespaceSelector:
+    any: true
+  endpoints:
+  - port: http
+    path: /actuator/prometheus
+    interval: 5s
+  selector:
+    matchLabels:
+    {{- range $label_key, $label_value := $serviceMonitor.matchLabels }}
+      {{ $label_key }}: {{ $label_value }}
+    {{ end -}}
+{{ end -}}
+{{ end -}}
