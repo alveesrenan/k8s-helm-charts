@@ -12,9 +12,9 @@ It's composed by:
     - **Deployment**
     - **Service**
     - **Persistent volume claim** using dynamic volume provisioning throught storage class (nfs, aws ebs.csi.driver, aws.efs.csi.driver, gcePersistentDisk, etc...)
-    -- **Secret**
-    -- **Ingress**
-    -- **Horizontal pod autoscaler**
+    - **Secret**
+    - **Ingress**
+    - **Horizontal pod autoscaler**
     <br />
 
     Deploying the helm chart:
