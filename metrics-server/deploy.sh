@@ -16,6 +16,6 @@ EXTRA_CMD='--atomic --cleanup-on-fail --recreate-pods --reuse-values -f values.y
 helm repo update
 check_status $? 'Error when updating helm repos.'
 
-helm upgrade --install ${CHART_NAME} stable/metrics-server --version=${CHART_VERSION} \
+helm upgrade --install ${CHART_NAME} ${CHART_REPOSITORY}/${CHART_NAME} --version=${CHART_VERSION} \
   --namespace ${CHART_NAMESPACE} $EXTRA_CMD
 check_status $? 'Error when installing helm chart.'
