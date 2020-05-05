@@ -1,4 +1,4 @@
-# fullnameOverride: 
+fullnameOverride: standard-application
 
 image:
   repository: renaalve/kubernetes-hpa-custom
@@ -43,19 +43,26 @@ deployment:
   ## Additional server container environment variables as secrets
   ## Ref: https://kubernetes.io/docs/tasks/inject-data-application/distribute-credentials-secure/#define-container-environment-variables-using-secret-data
   ## 
-  envFromSecret:
-    - name: SECRET_KEY
-      keys:
-        DEPLOYMENT_ENV_NAME: SECRET_VALUE # env name: secret key
-    
+  envFromSecret: []
+    # - name: secret-name
+    # keys:
+    #   ENVIRONMENT_NAME: SECRET_KEY
+
   ## Additional server container environment variables as configmaps
   ## Ref: https://kubernetes.io/docs/tasks/configure-pod-container/configure-pod-configmap/
   ## 
-  envFromConfigMap:
-    - name: CONFIG_MAP_KEY
-      keys:
-        RABBITMQ_HOST: rabbitmq.host # env name: config map key
-        RABBITMQ_PORT: rabbitmq.port 
+  envFromConfigMap: []
+    # - name: configmap-name
+    # keys:
+    #   ENVIRONMENT_NAME: CONFIGMAP_KEY
+
+  ## Additional server security context setup
+  ## Ref: https://kubernetes.io/docs/tasks/configure-pod-container/security-context/
+  ##
+  securityContext: {}
+    # runAsUser: 1000
+    # runAsGroup: 1000
+    # fsGroup: 1000
 
   ## Additional server container environment variables
   ## Ref: https://kubernetes.io/docs/tasks/inject-data-application/define-environment-variable-container/
@@ -74,20 +81,20 @@ deployment:
     periodSeconds: 15
     failureThreshold: 3
     path: /actuator/health
-    port: 8080
+    containerPort: 8080
   
   readinessProbe:
     initialDelaySeconds: 30
     periodSeconds: 15
     failureThreshold: 3
     path: /actuator/health
-    port: 8080
+    containerPort: 8080
   
   ## node selector setup
   ## Ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#nodeselector
   ##
   nodeSelector: {}
-    # node-type: worker
+    # label-key: label-value
 
   ## node affinity setup
   ## Ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#node-affinity
@@ -106,26 +113,34 @@ deployment:
 ## Ref: https://kubernetes.io/docs/tasks/configure-pod-container/configure-volume-storage/
 ## 
 persistence:
-  enabled: true
-  storageClass: storage-class-name
-  volumeMounts:
-    logs:
-      mount:
-        path: /standard-application/logs
+  enabled: false
+  # storageClass: singlewriter-standard
+  # accessModes: ReadWriteOnce
+  volumes:
+    persistentVolumeClaims: []
+      # - name: persistent-volume-claim-name
+      #   path: /foo/bar
+      #   size: 10Gi
+    configMaps: []
+      # - name: configmap-name
+      #   path: /foo/bar/filename.txt
+      #   subpath: filename.txt
         
 ## Ingress k8s resource
 ## Ref: https://kubernetes.io/docs/concepts/services-networking/ingress/
 ##
 ingress:
   enabled: false
-  annotations:
-    kubernetes.io/ingress.class: nginx
-    kubernetes.io/ingress.allow-http: "true"
-    nginx.ingress.kubernetes.io/add-base-url: "true"
-    nginx.ingress.kubernetes.io/rewrite-target: /
-    nginx.ingress.kubernetes.io/ssl-redirect: "false"
-  hostName: standard-application.com
-  path: /
+  # annotations:
+  #   kubernetes.io/ingress.class: nginx
+  #   kubernetes.io/ingress.allow-http: "true"
+  #   nginx.ingress.kubernetes.io/add-base-url: "true"
+  #   nginx.ingress.kubernetes.io/rewrite-target: /
+  #   nginx.ingress.kubernetes.io/ssl-redirect: "false"
+  # hosts:
+  #   - name: example.com
+  #     path: /
+  #     servicePort: 80
 
 ## Horizontal Pod Autoscaler k8s resource
 ## Ref: https://kubernetes.io/docs/tasks/run-application/horizontal-pod-autoscale/
@@ -143,8 +158,8 @@ hpa:
 ## Ref: https://kubernetes.io/docs/concepts/configuration/secret/
 ##
 secret:
-  enabled: true
-  secrets:
-    - name: SECRET_NAME
-      data:
-        SECRET_KEY: U0VDUkVUX1ZBTFVFCg==
+  enabled: false
+  secrets: []
+    # - name: secret-name
+    #   data:
+    #     KEY: VALUE IN BASE64

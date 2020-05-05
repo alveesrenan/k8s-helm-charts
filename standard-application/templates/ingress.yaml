@@ -1,0 +1,26 @@
+{{- $serviceName := include "standard-application.fullname" . -}}
+
+{{- if .Values.ingress.enabled -}}
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: {{ include "standard-application.fullname" . }}
+  namespace: {{ include "standard-application.namespace" . }}
+  labels:
+    {{ include "standard-application.labels" . | nindent 4 }}
+  {{- if .Values.ingress.annotations }}
+  annotations:
+    {{ toYaml .Values.ingress.annotations | nindent 4}}
+  {{- end }}
+spec:
+  rules:
+    {{- range .Values.ingress.hosts }}
+    - host: {{ .name }} 
+      http:
+        paths:
+          - path: {{ default "/" .path }}
+            backend:
+              serviceName: {{ $serviceName }}
+              servicePort: {{ .servicePort }}
+  {{- end -}}
+{{- end -}}

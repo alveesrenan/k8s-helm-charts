@@ -1,18 +1,26 @@
+{{- $root := . -}}
+
 {{- if .Values.persistence.enabled -}}
 {{- if not .Values.persistence.existingClaim -}}
+{{- range $pvc := .Values.persistence.volumes.persistentVolumeClaims }}
+---
 kind: PersistentVolumeClaim
 apiVersion: v1
 metadata:
-  name: {{ printf "%s-%s" (include "standard-application.fullname" .) "pvc" }}
-  namespace: {{ include "standard-application.namespace" . }}
+  name: {{ printf "%s-%s-%s" $root.Release.Name $pvc.name "pvc" }}
+  namespace: {{ $root.Release.Namespace }}
   labels:
-    {{ include "standard-application.labels" . | nindent 4 }}
+    app.kubernetes.io/name: {{ $root.Release.Name }}
+    app.kubernetes.io/instance: {{ $root.Release.Name }}
+    app.kubernetes.io/managed-by: {{ $root.Release.Service }}
+    helm.sh/chart: {{ $root.Chart.Name }}
 spec:
-  storageClassName: {{ .Values.persistence.storageClass | quote }}
+  storageClassName: {{ $root.Values.persistence.storageClass | quote }}
   accessModes:
-    - ReadWriteMany
+    - {{ $root.Values.persistence.accessModes | quote }}
   resources:
     requests:
-      storage: 10Gi
+      storage: {{ $pvc.size }}
+{{ end -}}
 {{- end -}}
 {{- end -}}

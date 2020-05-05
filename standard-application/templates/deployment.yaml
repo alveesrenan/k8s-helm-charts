@@ -1,3 +1,5 @@
+{{- $root := . -}}
+
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -25,6 +27,10 @@ spec:
       affinity:
       {{ toYaml . | nindent 8 }}
       {{- end }}
+      {{- with .Values.deployment.securityContext }}
+      securityContext:
+      {{ toYaml . | nindent 8 }}
+      {{- end }}
       containers:
         - name: {{ .Values.deployment.name }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
@@ -38,7 +44,7 @@ spec:
           livenessProbe:
             httpGet:
               path: {{ .Values.deployment.livenessProbe.path }}
-              port: {{ .Values.deployment.livenessProbe.port }}
+              port: {{ .Values.deployment.livenessProbe.containerPort }}
             initialDelaySeconds: {{ .Values.deployment.livenessProbe.initialDelaySeconds }}
             periodSeconds: {{ .Values.deployment.livenessProbe.periodSeconds }}
             failureThreshold: {{ .Values.deployment.livenessProbe.failureThreshold }}
@@ -47,17 +53,18 @@ spec:
           readinessProbe:
             httpGet:
               path: {{ .Values.deployment.readinessProbe.path }}
-              port: {{ .Values.deployment.readinessProbe.port }}
+              port: {{ .Values.deployment.readinessProbe.containerPort }}
             initialDelaySeconds: {{ .Values.deployment.readinessProbe.initialDelaySeconds }}
             periodSeconds: {{ .Values.deployment.readinessProbe.periodSeconds }}
             failureThreshold: {{ .Values.deployment.readinessProbe.failureThreshold }}
           {{ end -}}
-          {{- if .Values.deployment.env }}
           env:
             # range within normal environment variables
-            {{- range $secret_key, $secret_value := .Values.deployment.env }}
+            {{- if .Values.deployment.env }}
+              {{- range $secret_key, $secret_value := .Values.deployment.env }}
             - name: {{ $secret_key }}
               value: {{ $secret_value | quote }}
+              {{ end -}}
             {{ end -}}
             # range within configmaps environment variables 
             {{- if .Values.deployment.envFromConfigMap }}
@@ -83,15 +90,32 @@ spec:
                 {{ end -}}
               {{ end -}}
             {{ end -}}
-          {{ end -}}
           {{- if .Values.deployment.resources }}
           resources:
           {{ toYaml .Values.deployment.resources | nindent 12 }}
           {{ end -}}
+          {{- if .Values.persistence.enabled }}
           volumeMounts:
-            - name: {{ printf "%s-%s" (include "standard-application.fullname" .) "volume" }}
-              mountPath: {{ .Values.persistence.volumeMounts.logs.mount.path }}
+            {{- range $pvc := .Values.persistence.volumes.persistentVolumeClaims }}
+            - name: {{ printf "%s-%s" $root.Release.Name $pvc.name }}
+              mountPath: {{ $pvc.path }}
+            {{- end }}
+            {{- range $configmap := .Values.persistence.volumes.configMaps }}
+            - name: {{ printf "%s-%s" $root.Release.Name $configmap.name }}
+              mountPath: {{ $configmap.path }}
+              subPath: {{ $configmap.subpath }}
+            {{- end }}
+          {{ end -}}
+      {{- if .Values.persistence.enabled }}
       volumes:
-        - name: {{ printf "%s-%s" (include "standard-application.fullname" .) "volume" }}
+        {{- range $pvc := .Values.persistence.volumes.persistentVolumeClaims }}
+        - name: {{ printf "%s-%s" $root.Release.Name $pvc.name  }}
           persistentVolumeClaim:
-            claimName: {{ default .Values.persistence.existingClaim (printf "%s-%s" (include "standard-application.fullname" .) "pvc") }}
+            claimName: {{ default $root.Values.persistence.existingClaim (printf "%s-%s-%s" $root.Release.Name $pvc.name "pvc") }}
+        {{- end }}
+        {{- range $configmap := .Values.persistence.volumes.configMaps }}
+        - name: {{ printf "%s-%s" $root.Release.Name $configmap.name }}
+          configMap:
+            name: {{ $configmap.name }}
+        {{- end }}
+      {{ end -}}
